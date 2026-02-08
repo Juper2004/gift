@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Elegant Valentine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+<style>
+        :root {
+            --bg-white: #ffffff;
+            --bg-pink-light: #fce4ec;
+            --bg-pink-dark: #ff007f;
+            --bg-red-light: #ff3b3b;
+            --bg-red-dark: #d40000;
+            --envelope-white: #ffffff;
+            --lining-pink: #f06292;
+            --paper-cream: #fdf5e6;
+            --gold-seal: radial-gradient(circle, #e6b800, #b8860b);
+        }
+
+        body {
+            background: linear-gradient(90deg, 
+                var(--bg-white) 0%, var(--bg-white) 20%, 
+                var(--bg-pink-light) 20%, var(--bg-pink-light) 40%, 
+                var(--bg-pink-dark) 40%, var(--bg-pink-dark) 60%, 
+                var(--bg-red-light) 60%, var(--bg-red-light) 80%, 
+                var(--bg-red-dark) 80%, var(--bg-red-dark) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            touch-action: manipulation; /* Prevents accidental zooming on mobile taps */
+        }
+
+        .heart-bg { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 30px;
+            filter: blur(1.5px);
+            animation: float 12s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+        }
+
+        .stage {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            position: relative;
+            width: 380px;
+            height: 260px;
+            cursor: pointer;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            top: 5%; 
+        }
+
+        /* DESKTOP OPEN STATE */
+        .container.open { transform: translateX(220px); }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: var(--envelope-white);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border-radius: 4px;
+            z-index: 5;
+        }
+
+        .lining {
+            position: absolute; top: 0; width: 100%; height: 100%;
+            background-color: var(--lining-pink);
+            clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
+            z-index: 1;
+        }
+
+        .flap {
+            position: absolute; top: 0; width: 100%; height: 100%;
+            background-color: var(--envelope-white);
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+            z-index: 10;
+            transform-origin: top;
+            transition: transform 0.8s ease;
+        }
+
+        .pocket {
+            position: absolute; bottom: 0; width: 100%; height: 100%;
+            background-color: var(--envelope-white);
+            clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+            z-index: 8;
+        }
+
+        .letter {
+            position: absolute;
+            top: 5%; left: 50%;
+            transform: translateX(-50%);
+            width: 90%; height: 90%;
+            background: var(--paper-cream);
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: -5px 5px 15px rgba(0,0,0,0.2);
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            opacity: 0;
+            z-index: 2;
+            overflow-y: auto; /* Scroll if text is long on small phones */
+        }
+
+        .letter h2 {
+            font-family: 'Great Vibes', cursive;
+            color: #8b0000;
+            font-size: 1.8rem;
+            margin: 0 0 10px 0;
+            text-align: center;
+        }
+
+        .letter p {
+            font-family: 'Georgia', serif;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .photos {
+            position: absolute;
+            top: 0; left: 50%;
+            width: 100%; height: 100%;
+            transform: translateX(-50%);
+            z-index: 1;
+            transition: all 1s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .photo {
+            position: absolute;
+            width: 140px; height: 140px;
+            border: 5px solid white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            object-fit: cover;
+            left: 50%; margin-left: -70px;
+            transition: transform 0.6s ease;
+        }
+
+        .seal {
+            position: absolute; top: 120px; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px; height: 60px;
+            background: var(--gold-seal);
+            border-radius: 50%;
+            z-index: 15;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: opacity 0.4s;
+        }
+        .seal::after { content: "❤"; color: #7a0000; font-size: 30px; }
+
+        /* OPEN ANIMATIONS (Desktop) */
+        .container.open .flap { transform: rotateX(180deg); z-index: 0; }
+        .container.open .seal { opacity: 0; pointer-events: none; }
+        .container.open .letter {
+            opacity: 1;
+            width: 350px;
+            height: 480px;
+            transform: translate(-580px, -110px);
+            z-index: 20;
+        }
+        .container.open .photos {
+            opacity: 1;
+            transform: translate(-50%, -200px);
+            pointer-events: auto;
+        }
+        .container.open .p1 { transform: rotate(-12deg) translateX(-100px); }
+        .container.open .p2 { transform: rotate(0deg) translateY(-15px); z-index: 2; }
+        .container.open .p3 { transform: rotate(12deg) translateX(100px); }
+
+        .hint {
+            position: absolute; bottom: -60px; width: 100%;
+            text-align: center; color: white; font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 850px) {
+            .container {
+                width: 300px;
+                height: 210px;
+                top: 15%; /* Moves envelope down on phone */
+            }
+
+            .container.open {
+                transform: translateX(0); /* Keep centered on X axis */
+            }
+
+            .container.open .letter {
+                transform: translate(-50%, -410px); /* Move letter ABOVE the envelope */
+                width: 320px;
+                height: 380px;
+            }
+
+            .container.open .photos {
+                transform: translate(-50%, 40px); /* Move photos BELOW the envelope */
+            }
+
+            .container.open .p1 { transform: rotate(-10deg) translateX(-80px); }
+            .container.open .p3 { transform: rotate(10deg) translateX(80px); }
+            
+            .photo { width: 110px; height: 110px; margin-left: -55px; }
+            .seal { top: 100px; }
+        }
+</style>
+    <div class="heart-bg" id="heart-container"></div>
+
+    <div class="stage">
+        <div class="container" id="env" onclick="this.classList.toggle('open')">
+            <div class="seal"></div>
+            <div class="envelope">
+                <div class="flap"></div>
+                <div class="lining"></div>
+                <div class="pocket"></div>
+                
+                <div class="letter">
+                    <h2>Happy Valentine's Day Lang</h2>
+                    <p>
+                        I wanted to find the perfect way to tell you how much you mean to me. 
+                        This elegant surprise is just a small token of my love.
+                        <br><br>
+                        Every memory captured in the photos represents a chapter in our story. 
+                        Thank you for being my light and my joy.
+                        <br><br>
+                        I love you more than words can say. Virtual gift lang sa ta ron kay lagyo ta.
+                    </p>
+                    <p style="text-align: right; margin-top: 15px; font-weight: bold; color: #8b0000; font-family: 'Dancing Script', cursive; font-size: 1.1rem;">
+                        Forever Yours, <br> [Langga]
+                    </p>
+                </div>
+
+                <div class="photos">
+                    <img src="1.jpg" class="photo p1">
+                    <img src="2.jpg" class="photo p2">
+                    <img src="3.jpg" class="photo p3">
+                </div>
+            </div>
+            <div class="hint">Pinduta para Maablihan</div>
+        </div>
+    </div>
+
+    <script>
+        const bg = document.getElementById('heart-container');
+        function createHeart() {
+            const h = document.createElement('div');
+            h.classList.add('floating-heart');
+            h.innerHTML = '❤❤❤';
+            h.innerHTML = '❤❤❤';
+            h.innerHTML = '❤❤❤';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            h.style.opacity = Math.random() * 0.4;
+            bg.appendChild(h);
+            setTimeout(() => h.remove(), 12000);
+        }
+        setInterval(createHeart, 1000);
+    </script>
+</body>
+</html>
